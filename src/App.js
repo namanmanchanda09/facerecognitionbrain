@@ -3,8 +3,15 @@ import Navigation from './components/Navigation/Navigation'
 import Logo from './components/Logo/Logo.js'
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm'
 import Rank from './components/Rank/Rank'
+import FaceRecognition from './components/FaceRecognition/FaceRecognition'
 import './App.css';
 import Particles from 'react-particles-js'
+import Clarifai from 'clarifai'
+
+const app = new Clarifai.App({
+  apiKey: 'b7b1ee303ec349e39623a22a40912d16'
+});
+
 
 const particlesOptions = {
   particles: {
@@ -32,10 +39,18 @@ class App extends React.Component{
 
   onButtonSubmit = () =>{
     console.log('Click');
+    app.models.predict("a403429f2ddf4b49b307e318f00e528b", "https://samples.clarifai.com/face-det.jpg").then(
+    function(response) {
+      console.log(response)
+      // do something with response
+    },
+    function(err) {
+      // there was an error
+    }
+  );
   }
-
-
-
+  
+  
   render(){
     return (
       <div className="App">
@@ -47,7 +62,7 @@ class App extends React.Component{
         <Rank />
         <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
         
-        {/* <FaceRecognition /> */}
+        <FaceRecognition />
   
       </div>
     );
