@@ -3,6 +3,7 @@ import Navigation from './components/Navigation/Navigation'
 import Logo from './components/Logo/Logo.js'
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm'
 import Rank from './components/Rank/Rank'
+import Register from './components/Register/Register'
 import FaceRecognition from './components/FaceRecognition/FaceRecognition'
 import './App.css';
 import Particles from 'react-particles-js'
@@ -33,7 +34,8 @@ class App extends React.Component{
       input:'',
       imageUrl:'',
       box:{},
-      route: 'signin'
+      route: 'signin',
+      isSignedIn: false
     }
   }
 
@@ -74,6 +76,17 @@ class App extends React.Component{
     .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
     .catch(error => console.log(error));
   }
+
+  onRouteChange = (route) =>{
+    if(route === 'signout'){
+      this.setState({isSignedIn: false})
+    }else if(route === 'home'){
+      this.setState({isSignedIn: true})
+    }
+    this.setState({route:route})
+  }
+
+
   
   
   render(){
@@ -82,18 +95,33 @@ class App extends React.Component{
         <Particles className='particles' 
             params={particlesOptions}
           />
-        <Navigation />
-        {this.state.route === 'signin'
-        ? <Signin />
-        : 
-        <div>
-        <Logo />
-        <Rank />
-        <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
-        
-        <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl}/>
+        <Navigation isSignedIn = {this.state.isSignedIn} onRouteChange={this.onRouteChange}/>
+
+          {this.state.route === 'home'
+          ?             
+          <div>
+            <Logo />
+            <Rank />
+            <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
+            
+            <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl}/>
         </div>
-        }
+        : (
+          this.state.route === 'signin'
+          ? <Signin onRouteChange={this.onRouteChange}/>
+          : <Register onRouteChange={this.onRouteChange}/>
+        )
+          
+          
+          
+          
+          
+          
+          
+          
+      
+
+          }
   
       </div>
     );
@@ -101,6 +129,8 @@ class App extends React.Component{
 }
 
 export default App;
+
+
 
 
 
